@@ -11,5 +11,5 @@ def environment(**options):
         }
     )
     env = Environment(**options)
-    env.filters = FILTERS
+    env.filters.update(FILTERS)
     return env
