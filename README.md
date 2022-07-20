@@ -197,3 +197,10 @@ template. In the above case, `{% graphicspath %}` turns into `\graphicspath{ {"c
 If `LATEX_GRAPHICSPATH` is not specified, `django-tex` takes the `BASE_DIR` instead.
 
 Note: There might be a problem if the path to the graphics directory contains whitespaces. To my knowledge, `lualatex` cannot handle whitespaces in the `\graphicspath` command, but `pdflatex` can.
+
+### VSCode users
+
+Those of you using VSCode can install the extension `vscode-django-tex` so you can enjoy proper syntax highlighting while you are writing `django-tex` templates.
+
+* View the [Source Code](https://github.com/bfrangi/vscode-django-tex) on _GitHub_.
+* View the extension on the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=bfrangi.vscode-django-tex).
