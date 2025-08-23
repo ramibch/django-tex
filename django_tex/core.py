@@ -1,21 +1,26 @@
 import os
-from subprocess import PIPE, run, CalledProcessError
 import tempfile
+from subprocess import PIPE, CalledProcessError, run
 
+from django.conf import settings
 from django.template.loader import get_template
 
 from django_tex.exceptions import TexError
-from django.conf import settings
 
 DEFAULT_INTERPRETER = "lualatex"
 
 
-def run_tex(source, template_name=None):
+def run_tex(source, template_name=None, run_times=1):
     with tempfile.TemporaryDirectory() as tempdir:
-        return run_tex_in_directory(source, tempdir, template_name=template_name)
+        return run_tex_in_directory(
+            source,
+            tempdir,
+            template_name=template_name,
+            run_times=run_times,
+        )
 
 
-def run_tex_in_directory(source, directory, template_name=None):
+def run_tex_in_directory(source, directory, template_name=None, run_times=1):
     filename = "texput.tex"
     command = getattr(settings, "LATEX_INTERPRETER", DEFAULT_INTERPRETER)
     latex_interpreter_options = getattr(settings, "LATEX_INTERPRETER_OPTIONS", "")
@@ -23,14 +28,15 @@ def run_tex_in_directory(source, directory, template_name=None):
         f.write(source)
     args = f"{command} -interaction=batchmode {latex_interpreter_options} {filename}"
     try:
-        run(
-            args,
-            shell=True,
-            stdout=PIPE,
-            stderr=PIPE,
-            check=True,
-            cwd=directory,
-        )
+        for _ in range(run_times):
+            run(
+                args,
+                shell=True,
+                stdout=PIPE,
+                stderr=PIPE,
+                check=True,
+                cwd=directory,
+            )
     except CalledProcessError as called_process_error:
         try:
             with open(
@@ -46,9 +52,9 @@ def run_tex_in_directory(source, directory, template_name=None):
     return pdf
 
 
-def compile_template_to_pdf(template_name, context):
+def compile_template_to_pdf(template_name, context, run_times=1):
     source = render_template_with_context(template_name, context)
-    return run_tex(source, template_name=template_name)
+    return run_tex(source, template_name=template_name, run_times=run_times)
 
 
 def render_template_with_context(template_name, context):
