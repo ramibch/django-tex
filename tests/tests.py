@@ -359,4 +359,25 @@ class Views(TestCase):
         response = render_to_pdf(request, template_name, context, filename="test.pdf")
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response["Content-Type"], "application/pdf")
-        self.assertEqual(response["Content-Disposition"], 'filename="test.pdf"')
+        self.assertEqual(response["Content-Disposition"], 'inline; filename="test.pdf"')
+
+    def test_render_to_pdf_content_dispositions(self):
+        request = None  # request is only needed to make the signature of render_to_pdf similar to the signature of django's render function
+        template_name = "tests/test.tex"
+        context = {
+            "test": "a simple test",
+            "number": Decimal("1000.10"),
+            "date": datetime.date(2017, 10, 25),
+            "names": ["Arjen", "Robert", "Mats"],
+        }
+        response = render_to_pdf(request, template_name, context, filename="test.pdf")
+        self.assertEqual(response["Content-Disposition"], 'inline; filename="test.pdf"')
+
+        response = render_to_pdf(request, template_name, context, as_attachment=True, filename="test.pdf")
+        self.assertEqual(response["Content-Disposition"], 'attachment; filename="test.pdf"')
+
+        response = render_to_pdf(request, template_name, context, as_attachment=True)
+        self.assertEqual(response["Content-Disposition"], 'attachment')
+
+        response = render_to_pdf(request, template_name, context)
+        self.assertFalse("Content-Disposition" in response)
