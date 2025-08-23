@@ -55,7 +55,7 @@ from django_tex.core import compile_template_to_pdf
 
 template_name = 'test.tex'
 context = {'foo': 'Bar'}
-PDF = compile_template_to_pdf(template_name, context)
+PDF = compile_template_to_pdf(template_name, context, run_times=1)
 ```
 
 Or use `render_to_pdf` to generate a HTTPResponse containing the PDF file:
@@ -66,8 +66,11 @@ from django_tex.shortcuts import render_to_pdf
 def view(request):
     template_name = 'test.tex'
     context = {'foo': 'Bar'}
-    return render_to_pdf(request, template_name, context, filename='test.pdf')
+    return render_to_pdf(request, template_name, context, filename='test.pdf', run_times=1)
 ```
+
+> The parameter `run_times` is a way to compile a tex template multiple times is required ([#38](https://github.com/ramibch/django-tex/issues/38)). 
+
 
 ## Some notes on usage
 
