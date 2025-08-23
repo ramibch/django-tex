@@ -4,17 +4,17 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.9]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install LaTeX
-        run: | 
-          sudo apt-get install texlive-latex-base texlive-xetex latexmk
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --fix-missing texlive-latex-base texlive-xetex latexmk
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
