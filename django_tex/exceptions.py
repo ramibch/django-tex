@@ -13,7 +13,8 @@ ERROR = re.compile(r"|".join(error_patterns), re.DOTALL + re.MULTILINE)
 class TexError(Exception):
     def __init__(self, log, source, template_name=None):
         self.log = log
-        self.source = source.splitlines()
+        self.source = source
+        self.source_lines = source.splitlines()
 
         mo = ERROR.search(self.log)
 
