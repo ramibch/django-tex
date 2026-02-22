@@ -55,7 +55,7 @@ from django_tex.core import compile_template_to_pdf
 
 template_name = 'test.tex'
 context = {'foo': 'Bar'}
-PDF = compile_template_to_pdf(template_name, context, run_times=1)
+PDF = compile_template_to_pdf(template_name, context, run_times=1, interpreter="pdflatex", interpreter_options="")
 ```
 
 Or use `render_to_pdf` to generate a HTTPResponse containing the PDF file:
@@ -66,7 +66,16 @@ from django_tex.shortcuts import render_to_pdf
 def view(request):
     template_name = 'test.tex'
     context = {'foo': 'Bar'}
-    return render_to_pdf(request, template_name, context, filename='test.pdf', run_times=1)
+    return render_to_pdf(
+        request,
+        template_name,
+        context,
+        filename='test.pdf',
+        run_times=1, # optional
+        interpreter="pdflatex", # optional
+        interpreter_options="", # optional
+    )
+
 ```
 
 > The parameter `run_times` is a way to compile a tex template multiple times is required ([#38](https://github.com/ramibch/django-tex/issues/38)). 
@@ -80,9 +89,13 @@ The default LaTeX interpreter is set to `lualatex`. This can be changed by the s
 `LATEX_INTERPRETER`, for instance: `LATEX_INTERPRETER = 'pdflatex'`. Of course, the interpreter needs
 to be installed on your system for `django-tex` to work properly.
 
+You can also pass the `interpreter` option to the LaTeX render functions. If nothing is passed, the module uses the setting value.
+
 ### Interpreter arguments
 
-You can pass additional arguments to the latex interpreter by using the `LATEX_INTERPRETER_OPTIONS` setting.
+You can pass additional arguments to the latex interpreter by using the `LATEX_INTERPRETER_OPTIONS` setting. 
+
+You can also pass the argument `interpreter_options` to the LaTeX render functions here. If nothing is passed, the module uses the setting value.
 
 ### Whitespace control
 

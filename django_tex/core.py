@@ -10,20 +10,21 @@ from django_tex.exceptions import TexError
 DEFAULT_INTERPRETER = "lualatex"
 
 
-def run_tex(source, template_name=None, run_times=1):
+def run_tex(source, template_name=None, run_times=1, interpreter=None):
     with tempfile.TemporaryDirectory() as tempdir:
         return run_tex_in_directory(
             source,
             tempdir,
             template_name=template_name,
             run_times=run_times,
+            interpreter=interpreter,
         )
 
 
-def run_tex_in_directory(source, directory, template_name=None, run_times=1):
+def run_tex_in_directory(source, directory, template_name=None, run_times=1, interpreter=None, interpreter_options=None):
     filename = "texput.tex"
-    command = getattr(settings, "LATEX_INTERPRETER", DEFAULT_INTERPRETER)
-    latex_interpreter_options = getattr(settings, "LATEX_INTERPRETER_OPTIONS", "")
+    command = interpreter or getattr(settings, "LATEX_INTERPRETER", DEFAULT_INTERPRETER)
+    latex_interpreter_options = interpreter_options or getattr(settings, "LATEX_INTERPRETER_OPTIONS", "")
     with open(os.path.join(directory, filename), "x", encoding="utf-8") as f:
         f.write(source)
     args = f"{command} -interaction=batchmode {latex_interpreter_options} {filename}"
@@ -52,9 +53,9 @@ def run_tex_in_directory(source, directory, template_name=None, run_times=1):
     return pdf
 
 
-def compile_template_to_pdf(template_name, context, run_times=1):
+def compile_template_to_pdf(template_name, context, run_times=1, interpreter=None, interpreter_options=None):
     source = render_template_with_context(template_name, context)
-    return run_tex(source, template_name=template_name, run_times=run_times)
+    return run_tex(source, template_name=template_name, run_times=run_times, interpreter=interpreter, interpreter_options=interpreter_options)
 
 
 def render_template_with_context(template_name, context):
