@@ -10,7 +10,7 @@ from django_tex.exceptions import TexError
 DEFAULT_INTERPRETER = "lualatex"
 
 
-def run_tex(source, template_name=None, run_times=1, interpreter=None):
+def run_tex(source, template_name=None, run_times=1, interpreter=None, interpreter_options=None):
     with tempfile.TemporaryDirectory() as tempdir:
         return run_tex_in_directory(
             source,
@@ -18,6 +18,7 @@ def run_tex(source, template_name=None, run_times=1, interpreter=None):
             template_name=template_name,
             run_times=run_times,
             interpreter=interpreter,
+            interpreter_options=interpreter_options,
         )
 
 
